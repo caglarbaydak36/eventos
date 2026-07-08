@@ -1,29 +1,37 @@
 import { supabase } from "@/lib/supabase";
+
+import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatsCards from "@/components/dashboard/StatsCards";
 import RevenueChart from "@/components/dashboard/RevenueChart";
+import QuickActions from "@/components/dashboard/QuickActions";
 
 export default async function DashboardPage() {
-  const { count } = await supabase
+  const { count, error } = await supabase
     .from("members")
-    .select("*", { count: "exact", head: true });
+    .select("*", {
+      count: "exact",
+      head: true,
+    });
+
+  if (error) {
+    console.error(error);
+  }
 
   return (
     <div className="space-y-8">
-
-      <div>
-        <h1 className="text-4xl font-bold text-slate-900">
-          Dashboard
-        </h1>
-
-        <p className="mt-2 text-slate-500">
-          Eventos Yönetim Paneline hoş geldiniz.
-        </p>
-      </div>
+      <DashboardHeader />
 
       <StatsCards totalMembers={count ?? 0} />
 
       <RevenueChart />
 
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          {/* Son Etkinlikler burada olacak */}
+        </div>
+
+        <QuickActions />
+      </div>
     </div>
   );
 }
