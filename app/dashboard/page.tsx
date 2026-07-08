@@ -1,32 +1,29 @@
-import Sidebar from "../../components/Sidebar";
-import Navbar from "../../components/Navbar";
-import Card from "../../components/Card";
+import { supabase } from "@/lib/supabase";
+import StatsCards from "@/components/dashboard/StatsCards";
+import RevenueChart from "@/components/dashboard/RevenueChart";
 
-export default function Dashboard() {
+export default async function DashboardPage() {
+  const { count } = await supabase
+    .from("members")
+    .select("*", { count: "exact", head: true });
+
   return (
-    <main className="flex min-h-screen bg-slate-100">
-      <Sidebar />
+    <div className="space-y-8">
 
-      <section className="flex-1">
-        <Navbar />
+      <div>
+        <h1 className="text-4xl font-bold text-slate-900">
+          Dashboard
+        </h1>
 
-        <div className="p-8">
-          <h1 className="text-3xl font-bold">
-            Hoş Geldin Çağlar 👋
-          </h1>
+        <p className="mt-2 text-slate-500">
+          Eventos Yönetim Paneline hoş geldiniz.
+        </p>
+      </div>
 
-          <p className="mt-2 text-gray-500">
-            EventOS Yönetim Paneli
-          </p>
+      <StatsCards totalMembers={count ?? 0} />
 
-          <div className="mt-10 grid grid-cols-4 gap-6">
-            <Card title="Toplam Üye" value="245" />
-            <Card title="Etkinlik" value="12" />
-            <Card title="Aidat Geliri" value="₺18.250" />
-            <Card title="Bugünkü Giriş" value="89" />
-          </div>
-        </div>
-      </section>
-    </main>
+      <RevenueChart />
+
+    </div>
   );
 }
